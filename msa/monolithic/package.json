@@ -23,7 +23,8 @@
     "cors": "^2.8.5",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "mongoose": "^5.5.4"
+    "mongoose": "^5.5.4",
+    "dotenv": "^10.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"

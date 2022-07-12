@@ -27,6 +27,14 @@ db.createUser(
         roles: [ "readWrite", "dbAdmin" ]
     }
 )
+
+db.createUser(
+    {
+        user: "hskim",
+        pwd: "hskim1234",
+        roles: [ "readWrite", "dbAdmin" ]
+    }
+)
 ```
 
 ```
