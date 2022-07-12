@@ -1,0 +1,51 @@
+{
+  "name": "mongo-docker",
+  "version": "4.2.2",
+  "description": "Dockerfile and scripts to setup a production ready Mongo container",
+  "config": {
+    "imageRepo": "duluca/minimal-mongo",
+    "imageName": "minimal-mongo",
+    "imagePort": "27017",
+    "internalContainerPort": "27017"
+  },
+  "scripts": {
+    "init:env": "init-dev-env generate-dot-env example.env -f",
+    "predocker:build": "npm test",
+    "docker:build": "cross-conf-env docker image build . -t $npm_package_config_imageRepo:$npm_package_version",
+    "postdocker:build": "npm run docker:tag",
+    "prepush-tag": "cross-conf-env git push origin :refs/tags/$npm_package_version",
+    "push-tag": "cross-conf-env git tag -fa $npm_package_version",
+    "postpush-tag": "git push origin master --tags",
+    "docker:tag": " cross-conf-env docker image tag $npm_package_config_imageRepo:$npm_package_version $npm_package_config_imageRepo:latest",
+    "docker:run": "run-s -c docker:clean docker:runHelper",
+    "docker:runHelper": "cross-conf-env docker run --env-file .env --name $npm_package_config_imageName -d -p $npm_package_config_imagePort:$npm_package_config_internalContainerPort $npm_package_config_imageRepo",
+    "predocker:publish": "echo Attention! Ensure `docker login` is correct.",
+    "docker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:$npm_package_version",
+    "postdocker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:latest",
+    "docker:clean": "cross-conf-env docker rm -f $npm_package_config_imageName",
+    "predocker:taillogs": "echo Web Server Logs:",
+    "docker:taillogs": "cross-conf-env docker logs -f $npm_package_config_imageName",
+    "docker:debugmessage": "echo Docker Debug Completed Successfully! Hit Ctrl+C to terminate log tailing.",
+    "predocker:debug": "run-s docker:build docker:run",
+    "docker:debug": "run-s -cs docker:debugmessage docker:taillogs",
+    "docker:runMount": "npm run docker:clean && npm run docker:runHelperMount",
+    "docker:runHelperMount": "cross-conf-env docker run -v /tmp/docker-db:/data/db --env-file .env --name $npm_package_config_imageName -d -p $npm_package_config_imagePort:$npm_package_config_internalContainerPort $npm_package_config_imageRepo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/duluca/mongo-docker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/duluca/mongo-docker/issues"
+  },
+  "homepage": "https://github.com/duluca/mongo-docker#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "cross-conf-env": "^1.1.2",
+    "dev-norms": "^1.7.0",
+    "init-dev-env": "^1.0.0",
+    "npm-run-all": "^4.1.5"
+  }
+}
