@@ -1,3 +1,6 @@
+$ git config --global user.name ""
+$ git config --global user.email  ""
+
 ```
 # tag 변경
 $ docker tag code-server:latest kimhaksoo/code-server:latest
