@@ -1,15 +1,12 @@
 #!/bin/bash
 [[ -f /home/code/.homedir-initialized ]] || (
     echo "Remove this file to re-copy files from /etc/skel /opt/default_home at next container startup" > /home/code/.homedir-initialized
-    # dotglob to catch files like `.bashrc`
     shopt -s dotglob
     cp -r /etc/skel/* /home/code
     cp -r /opt/default_home/* /home/code
     shopt -u dotglob
-    # install kubernetes ext
-    #su code --login -c "/usr/bin/code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools"
-)
-# make workspace dir if it doesn't exist
+    )
+    # make workspace dir if it doesn't exist
 [[ -d /home/code/workspace ]] || mkdir /home/code/workspace
 # chown stuff to kube:kube
 chown code:code /home/code -R
