@@ -32,7 +32,7 @@ spec:
         app: code-server
     spec:
       containers:
-        - image: kimhaksoo/code-server:v0.1
+        - image: kimhaksoo/code-server:v0.11
           imagePullPolicy: IfNotPresent
           name: code-server
           ports:
@@ -40,6 +40,10 @@ spec:
           env:
             - name: PASSWORD
               value: "code321"
+          securityContext: 
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
