@@ -19,10 +19,10 @@ ingress:
   enabled: false
   className: ""
   annotations:  
-    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: ftp.orca.cloud.hancom.com
+    - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific

@@ -30,3 +30,23 @@ Create chart name and version as used by the chart label.
 {{- define "sftp-server.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "sftp-server.labels" -}}
+helm.sh/chart: {{ include "sftp-server.chart" . }}
+{{ include "sftp-server.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "sftp-server.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "sftp-server.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
