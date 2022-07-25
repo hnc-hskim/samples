@@ -8,7 +8,7 @@ helm package .
 mv sftp-server-0.3.2.tgz ../packages/stable/
 
 # Go To Public folder, sub module commit
-cd package
+cd ../packages
 
 # Add changes to git.
 git add .
