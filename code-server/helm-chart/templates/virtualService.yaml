@@ -17,12 +17,12 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-
 spec:
+  spec:
   gateways:
   - istio-system/apps-dns-ingressgateway
-  hosts:
-  - host: {{ .host | quote }}
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
   http:
   - match:
     - uri:
@@ -31,5 +31,6 @@ spec:
     - destination:
         host: code-server
         port:
-          number: 80
+          number: {{ $svcPort }}
+  {{- end }}
 {{- end }}

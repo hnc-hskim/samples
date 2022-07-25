@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: kimhaksoo/code-server
-  tag: '0.11'
+  tag: '4.5.1'
   pullPolicy: Always
 
 # Specifies one or more secrets to be used when pulling images from a
@@ -54,9 +54,9 @@ ingress:
   #      - code-server.example.loc
 
 virtualService:
-  enabled: false 
+  enabled: false
   #hosts:
-  #  - host: code-server.example.loc 
+  #  - host: code-server.example.loc
 
 # Optional additional arguments
 extraArgs: []
