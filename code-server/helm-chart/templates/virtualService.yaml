@@ -4,7 +4,7 @@
 {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.istio.io/v1beta1
 {{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: nnetworking.istio.io/v1beta1
+apiVersion: networking.istio.io/v1beta1
 {{- else -}}
 apiVersion: networking.istio.io/v1beta1
 {{- end }}
