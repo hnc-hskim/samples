@@ -1,0 +1,4 @@
+[submodule "packages"]
+	path = packages
+	url = https://github.com/hnc-hskim/helm-charts.git
+	branch = main
