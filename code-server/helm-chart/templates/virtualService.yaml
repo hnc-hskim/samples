@@ -11,16 +11,16 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "code-server.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-spec:
-  spec:
+spec: 
   gateways:
-  - istio-system/apps-dns-ingressgateway
+    - istio-system/apps-dns-ingressgateway
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
   http:
