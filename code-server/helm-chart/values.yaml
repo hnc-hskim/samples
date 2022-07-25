@@ -58,7 +58,7 @@ CodeServerUrl: # code-server.local
 
 virtualservice:
   enabled: false
-  gateways: istio-system/istio-ingressgateway
+  gateways: istio-system/apps-dns-ingressgateway
 
 # Optional additional arguments
 extraArgs: []
@@ -130,7 +130,7 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 1Gi
+  size: 5Gi
   annotations: {}
   # existingClaim: ""
   # hostPath: /data
