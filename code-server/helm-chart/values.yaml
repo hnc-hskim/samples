@@ -53,7 +53,7 @@ ingress:
   #    hosts:
   #      - code-server.example.loc
 
-  virtualService:
+virtualService:
   enabled: false 
   #hosts:
   #  - host: code-server.example.loc 
