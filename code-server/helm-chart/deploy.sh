@@ -5,7 +5,7 @@ echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
 # Build the package.
 helm package .  
-mv code-server-3.0.0.tgz ../../packages/code-server/
+mv code-server-3.0.1.tgz ../../packages/code-server/
 
 # Go To Public folder, sub module commit
 cd ../../packages
