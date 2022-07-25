@@ -53,6 +53,11 @@ ingress:
   #    hosts:
   #      - code-server.example.loc
 
+  virtualService:
+  enabled: false 
+  #hosts:
+  #  - host: code-server.example.loc 
+
 # Optional additional arguments
 extraArgs: []
   # These are the arguments normally passed to code-server; run
