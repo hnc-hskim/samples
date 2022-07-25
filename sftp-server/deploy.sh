@@ -5,7 +5,7 @@ echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
 # Build the package.
 helm package .  
-mv sftp-server-0.3.2.tgz package/stable/
+mv sftp-server-0.3.2.tgz ~/package/stable/
 
 # Go To Public folder, sub module commit
 cd package
