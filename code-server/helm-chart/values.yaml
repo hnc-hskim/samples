@@ -53,10 +53,11 @@ ingress:
   #    hosts:
   #      - code-server.example.loc
 
-virtualService:
+code-serverBaseUrl: # code-server.local
+
+virtualservice:
   enabled: false
-  #hosts:
-  #  - host: code-server.example.loc
+  # gateways: istio-system/istio-ingressgateway
 
 # Optional additional arguments
 extraArgs: []

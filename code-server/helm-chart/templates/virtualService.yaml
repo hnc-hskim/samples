@@ -1,36 +1,26 @@
-{{- if .Values.virtualService.enabled -}}
-{{- $fullName := include "code-server.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.istio.io/v1beta1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.istio.io/v1beta1
-{{- else -}}
-apiVersion: networking.istio.io/v1beta1
-{{- end }}
+{{- if .Values.virtualservice.enabled }}
+apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ $fullName }}
-  namespace: {{ .Release.Namespace }}
+  name: {{ include "code-server.fullname" . }}
   labels:
     {{- include "code-server.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- with .Values.virtualservice.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
-spec: 
+spec:
+  hosts:
+    - {{ .Values.code-serverBaseUrl | quote }}
   gateways:
-    - istio-system/apps-dns-ingressgateway
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    - {{ .Values.virtualservice.gateways }}
   http:
-  - match:
-    - uri:
-        prefix: /
-    route:
-    - destination:
-        host: code-server
-        port:
-          number: {{ $svcPort }}
-  {{- end }}
+    - match:
+      - uri:
+          prefix: "/"
+      route:
+        - destination:
+            host: {{ include "code-server.fullname" . }}
+            port:
+              number: 1313
 {{- end }}
