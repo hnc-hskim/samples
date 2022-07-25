@@ -1,3 +1,61 @@
+## helm chart 버전 관리
+- Chart.yaml
+```
+version: 3.0.5
+```
+
+- deploy.sh
+```
+# Chart.yaml에서 정의한 버전으로 스크립트 수정(패키지 파일명)
+mv code-server-3.0.5.tgz ../../packages/code-server/
+```
+
+## virtual service exmaple
+```
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1beta1","kind":"VirtualService","metadata":{"annotations":{},"name":"code-server-ingress","namespace":"code-server"},"spec":{"gateways":["istio-system/apps-dns-ingressgateway"],"hosts":["mycode.apps.orca.cloud.hancom.com"],"http":[{"match":[{"uri":{"prefix":"/"}}],"route":[{"destination":{"host":"code-server","port":{"number":80}}}]}]}}
+  creationTimestamp: "2022-07-25T05:47:26Z"
+  generation: 1
+  managedFields:
+  - apiVersion: networking.istio.io/v1beta1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+      f:spec:
+        .: {}
+        f:gateways: {}
+        f:hosts: {}
+        f:http: {}
+    manager: kubectl-client-side-apply
+    operation: Update
+    time: "2022-07-25T05:47:26Z"
+  name: code-server-ingress
+  namespace: code-server
+  resourceVersion: "100021654"
+  uid: 949baac2-39fd-4c85-b9ac-2dd1ba34ec44
+spec:
+  gateways:
+  - istio-system/apps-dns-ingressgateway
+  hosts:
+  - mycode.apps.orca.cloud.hancom.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: code-server
+        port:
+          number: 80
+```
+
 https://docs.docker.com/engine/install/ubuntu/
 
 
