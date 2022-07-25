@@ -4,7 +4,7 @@ echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
 
 # Build the package.
-helm package . --output-dir ./pakcage/stable 
+helm package . -d ./pakcage/stable 
 
 # Go To Public folder, sub module commit
 cd package
