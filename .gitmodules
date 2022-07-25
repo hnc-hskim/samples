@@ -1,0 +1,4 @@
+[submodule "sftp-server/package"]
+	path = sftp-server/package
+	url = https://github.com/hnc-hskim/helm-charts.git
+	branch = main
