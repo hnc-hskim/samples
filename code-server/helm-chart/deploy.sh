@@ -35,4 +35,6 @@ if [ $# -eq 1 ]
 fi
 git commit -m "$msg"
 
+git pull
+
 git push origin main
