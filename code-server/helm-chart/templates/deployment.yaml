@@ -44,7 +44,7 @@ spec:
           - |
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /home/coder
         securityContext:
-          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}          
         volumeMounts:
         - name: data
           mountPath: /home/coder
@@ -62,6 +62,9 @@ spec:
           {{- if .Values.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.securityContext.runAsUser }}
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
           {{- end }}
           env:
         {{- if .Values.extraVars }}
