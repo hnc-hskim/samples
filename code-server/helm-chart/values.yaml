@@ -96,8 +96,9 @@ volumePermissions:
 ##
 securityContext:
   enabled: true
-  fsGroup: 1000
-  runAsUser: 1000
+  runAsUser: 0
+  #fsGroup: 1000
+  #runAsUser: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -129,7 +130,7 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 10Gi
+  size: 1Gi
   annotations: {}
   # existingClaim: ""
   # hostPath: /data
