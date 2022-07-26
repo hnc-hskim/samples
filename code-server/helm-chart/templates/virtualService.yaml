@@ -4,9 +4,11 @@ kind: VirtualService
 metadata:
   name: {{ include "code-server.fullname" . }}
   namespace: {{ .Release.Namespace }}
-  labels:
-    {{- include "code-server.labels" . | nindent 4 }}
-  {{- with .Values.virtualservice.annotations }}
+  labels:     
+    app.kubernetes.io/name: {{ include "code-server.name" . }}
+    helm.sh/chart: {{ include "code-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
