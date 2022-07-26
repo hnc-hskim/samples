@@ -43,6 +43,7 @@ $ helm install <release name> <Chart.yaml path> --debug --dry-run
 
 helm install code-server ./helm-chart --debug --dry-run
 
+helm install code-server . --debug --dry-run
 ```
 
 ## 디버깅 방법
