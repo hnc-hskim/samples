@@ -8,7 +8,7 @@ git submodule update
 # Build the package.
 helm package .  
 helm repo index .
-mv code-server-3.0.12.tgz ../../packages/code-server/
+mv code-server-3.0.13.tgz ../../packages/code-server/
 mv index.yaml ../../packages/code-server/
 
 helm repo index ./code-server
