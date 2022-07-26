@@ -1,3 +1,21 @@
+## 차트 문법 검사
+```
+$ helm lint <Chart.yaml path>
+```
+
+## templates 검사
+```
+$ helm template <Chart.yaml path>
+```
+
+## chart 시험 설치 
+```
+$ helm install <release name> <Chart.yaml path> --debug --dry-run
+
+helm install code-server ./helm-chart --debug --dry-run
+
+```
+
 ## 디버깅 방법
 - code-server 디렉토리에서 실행
 - helm upgrade -i code-server ./helm-chart --dry-run --debug

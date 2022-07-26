@@ -44,7 +44,7 @@ spec:
           - |
             chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /home/coder
         securityContext:
-          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}          
         volumeMounts:
         - name: data
           mountPath: /home/coder
@@ -52,6 +52,13 @@ spec:
 {{ tpl .Values.extraInitContainers . | indent 6}}
 {{- end }}
       {{- end }}
+      - name: copy-docker-binary
+        image: docker:stable-dind
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'cp /usr/local/bin/docker /code-server-bin/']
+        volumeMounts:
+        - name: code-server-usr-local-bin
+          mountPath: /code-server-bin
       containers:
 {{- if .Values.extraContainers }}
 {{ tpl .Values.extraContainers . | indent 8}}
@@ -103,6 +110,8 @@ spec:
             subPath: {{ .subPath | default "" }}
             readOnly: {{ .readOnly }}
           {{- end }}
+          - name: code-server-usr-local-bin
+            mountPath: /usr/local/bin
           ports:
             - name: http
               containerPort: 8080
@@ -117,7 +126,21 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+        - name: dind-daemon
+          image: docker:stable-dind
+          env:
+          - name: DOCKER_TLS_CERTDIR
+            value: ""
+          resources:
+            requests:
+              cpu: 20m
+              memory: 512Mi
+          securityContext:
+              privileged: true
+          volumeMounts:
+            - name: docker-graph-storage
+              mountPath: /var/lib/docker
+      {{- with .Values.nodeSelector }}      
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -167,3 +190,7 @@ spec:
           type: Directory
         {{- end }}
       {{- end }}
+      - name: docker-graph-storage
+        emptyDir: {}
+      - name: code-server-usr-local-bin
+        emptyDir: {}
