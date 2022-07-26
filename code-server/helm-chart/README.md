@@ -1,6 +1,31 @@
 https://kmaster.tistory.com/39?category=925859
 https://hub.docker.com/r/linuxserver/code-server
 
+## Code Server Helm 설치
+```
+# git clone https://github.com/coder/code-server
+# cd code-server
+# kubectl create ns code-server
+# helm upgrade --install code-server ci/helm-chart --set persistence.enabled=true -n code-server
+```
+
+## Plug-In 추가 설치
+```
+# cd ci/helm-chart
+# ls
+Chart.yaml  templates  values.yaml
+
+# values.yaml 수정
+
+# helm upgrade --install code-server .  -n code-server -f values.yaml
+```
+
+## Helm 삭제
+```
+$ helm delete code-server -n code-server
+release "code-server" uninstalled
+```
+
 
 ## 차트 문법 검사
 ```
