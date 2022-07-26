@@ -174,6 +174,7 @@ $ docker build -t code-server:v0.1 -f Dockerfile .
 ``` 
 docker run -it -p 8080:8080 --name code -e PASSWORD="0000" code-server:latest 
 
+# docker:dind는 도커컨테이너 안에 docker를 사용하기 위해 사용한다. 
 docker run --privileged --cap-add=NET_ADMIN -it -p 8080:8080 --name code -e PASSWORD="0000" code-server:latest docker:dind
 
 ```

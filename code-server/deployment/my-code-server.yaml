@@ -45,18 +45,38 @@ spec:
             capabilities:
               add: ["NET_ADMIN"]
 ---
-apiVersion: extensions/v1beta1
-kind: Ingress
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: code-server-ingress
+#   namespace: code-server
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+# spec:
+#   rules:
+#     - host: mycode.black.cloud.hancom.com
+#       http:
+#         paths:
+#           - backend:
+#               serviceName: code-server
+#               servicePort: 80
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
 metadata:
   name: code-server-ingress
-  namespace: code-server
-  annotations:
-    kubernetes.io/ingress.class: nginx
+  namespace: code-server  
 spec:
-  rules:
-    - host: mycode.black.cloud.hancom.com
-      http:
-        paths:
-          - backend:
-              serviceName: code-server
-              servicePort: 80
+  gateways:
+  - istio-system/apps-dns-ingressgateway
+  hosts:
+  - mycode.apps.orca.cloud.hancom.com
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: code-server
+        port:
+          number: 80

@@ -109,8 +109,6 @@ spec:
             subPath: {{ .subPath | default "" }}
             readOnly: {{ .readOnly }}
           {{- end }}
-          - name: code-server-usr-local-bin
-            mountPath: /usr/local/bin
           ports:
             - name: http
               containerPort: 8080
@@ -126,20 +124,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
-      - name: dind-daemon
-        image: docker:stable-dind
-        env:
-        - name: DOCKER_TLS_CERTDIR
-          value: ""
-        resources:
-          requests:
-            cpu: 20m
-            memory: 512Mi
-        securityContext:
-            privileged: true
-        volumeMounts:
-          - name: docker-graph-storage
-            mountPath: /var/lib/docker
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -189,7 +173,3 @@ spec:
           type: Directory
         {{- end }}
       {{- end }}
-      - name: docker-graph-storage
-        emptyDir: {}
-      - name: code-server-usr-local-bin
-        emptyDir: {}
