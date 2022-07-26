@@ -5,9 +5,8 @@
 replicaCount: 1
 
 image:
-  #repository: kimhaksoo/code-server
-  # tag: v0.11
-  repository: linuxserver/code-server  
+  repository: kimhaksoo/code-server
+   tag: v0.11
   pullPolicy: Always
 
 # Specifies one or more secrets to be used when pulling images from a
