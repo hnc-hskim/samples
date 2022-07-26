@@ -1,3 +1,7 @@
+https://kmaster.tistory.com/39?category=925859
+https://hub.docker.com/r/linuxserver/code-server
+
+
 ## 차트 문법 검사
 ```
 $ helm lint <Chart.yaml path>

@@ -12,23 +12,36 @@ metadata:
   namespace: code-server
 spec:
   ports:
-    - port: 80
-      targetPort: 8080
+    - port: 443
+      targetPort: 8443
   selector:
     app: code-server
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: code-server
+  namespace: code-server 
+  labels:
+    app.kubernetes.io/name: code-server 
+    app.kubernetes.io/instance: code-server 
+type: Opaque
+data: 
+  password: Y29kZTMyMQ==
+--- 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: code-server
   name: code-server
-  namespace: code-server
+  namespace: code-server 
+  labels:
+    app.kubernetes.io/name: code-server 
+    app.kubernetes.io/instance: code-server 
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: code-server
+  replicas: 1
   template:
     metadata:
       labels:
@@ -43,24 +56,19 @@ spec:
           mountPath: /code-server-bin
       containers:
       - name: code-server
-        #image: codercom/code-server:4.5.1
-        #image: linuxserver/code-server
-        image: kimhaksoo/code-server:v0.11
+        image: linuxserver/code-server
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080 
-        # envFrom:
+        - containerPort: 8443
+          name: https
+        envFrom:
         # - configMapRef:
-        #     name: code-server
-        # - secretRef:
-        #     name: code-server
+        #     name: code-server        
+        - secretRef:
+            name: code-server 
         env:
-          - name: PASSWORD
+          - name: SUDO_PASSWORD
             value: "code321"
-        securityContext: 
-            privileged: true
-            capabilities:
-              add: ["NET_ADMIN"]
         volumeMounts:
         - name: config
           mountPath: /config
@@ -78,8 +86,6 @@ spec:
             memory: 512Mi
         securityContext:
             privileged: true
-            capabilities:
-              add: ["NET_ADMIN"]
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
@@ -122,4 +128,4 @@ spec:
     - destination:
         host: code-server
         port:
-          number: 80
+          number: 443
