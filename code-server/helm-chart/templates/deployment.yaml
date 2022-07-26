@@ -34,20 +34,20 @@ spec:
         fsGroup: {{ .Values.securityContext.fsGroup }}
       {{- end }}
       {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
-      initContainers:
-      - name: init-chmod-data
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command:
-          - sh
-          - -c
-          - |
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /home/coder
-        securityContext:
-          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
-        volumeMounts:
-        - name: data
-          mountPath: /home/coder
+      # initContainers:
+      # - name: init-chmod-data
+      #   image: busybox:latest
+      #   imagePullPolicy: IfNotPresent
+      #   command:
+      #     - sh
+      #     - -c
+      #     - |
+      #       chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /home/coder
+      #   securityContext:
+      #     runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+      #   volumeMounts:
+      #   - name: data
+      #     mountPath: /home/coder
 {{- if .Values.extraInitContainers }}
 {{ tpl .Values.extraInitContainers . | indent 6}}
 {{- end }}
