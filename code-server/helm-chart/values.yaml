@@ -75,11 +75,11 @@ extraArgs: []
   # rather than two separate arguments (e.g. "- --param value" on a line).
 
 # Optional additional environment variables
-extraVars: []
-#  - name: DISABLE_TELEMETRY
-#    value: true
-#  - name: DOCKER_HOST
-#    value: "tcp://localhost:2375"
+extraVars: 
+ - name: DISABLE_TELEMETRY
+   value: true
+ - name: DOCKER_HOST
+   value: "tcp://localhost:2375"
 
 ##
 ## Init containers parameters:
