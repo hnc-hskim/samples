@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:experimental
 
-# FROM scratch AS packages
-# COPY release-packages/code-server*.deb /tmp/
+FROM scratch AS packages
+COPY deb/code-server*.deb /tmp/ 
 
-# FROM debian:11
-
-FROM ubuntu:20.04
+FROM debian:11
 
 RUN apt-get update \
  && apt-get install -y \
@@ -23,6 +21,7 @@ RUN apt-get update \
     sudo \
     vim.tiny \
     lsb-release \
+    wget \
   && git lfs install \
   && rm -rf /var/lib/apt/lists/*
 
@@ -30,6 +29,9 @@ RUN apt-get update \
 RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
   && locale-gen
 ENV LANG=en_US.UTF-8
+
+RUN locale-gen ko_KR.UTF-8
+ENV LC_ALL ko_KR.UTF-8
 
 RUN adduser --gecos '' --disabled-password coder && \
   echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
@@ -41,11 +43,22 @@ RUN ARCH="$(dpkg --print-architecture)" && \
     mkdir -p /etc/fixuid && \
     printf "user: coder\ngroup: coder\n" > /etc/fixuid/config.yml
 
-COPY ./entrypoint.sh /usr/bin/entrypoint.sh
-COPY ./tools.sh /usr/bin/tools.sh
-RUN chmod a+x /usr/local/bin/*
-
+COPY entrypoint.sh /usr/bin/entrypoint.sh
 RUN --mount=from=packages,src=/tmp,dst=/tmp/packages dpkg -i /tmp/packages/code-server*$(dpkg --print-architecture).deb
+
+COPY tools.sh /usr/bin/tools.sh
+RUN chmod a+x /usr/bin/tools.sh 
+
+
+RUN echo "Install kubectl"
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin
+
+# RUN echo "Install helm" 
+# RUN wget -q https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz  
+# RUN tar -zxf helm-v3.5.4-linux-amd64.tar.gz
+# RUN sudo mv linux-amd64/helm /usr/local/bin/helm  
 
 # Allow users to have scripts run on container startup to prepare workspace.
 # https://github.com/coder/code-server/issues/5177

@@ -1,3 +1,6 @@
+FROM scratch AS packages
+COPY release-packages/code-server*.deb /tmp/
+
 FROM ubuntu:20.04
 
 RUN apt-get update && apt-get upgrade -y
@@ -19,7 +22,19 @@ RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     openssl \
     bash-completion \
     dnsutils \
-    lsb-release
+    lsb-release  
+
+RUN apt update && apt install -y --no-install-recommends software-properties-common
+RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic main restricted universe multiverse"
+RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse"
+RUN add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse" 
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install -y --no-install-recommends python-lzma
+RUN apt-get install -y --no-install-recommends python-sqlitecachec
+RUN apt-get install -y --no-install-recommends python-pycurl
+RUN apt-get install -y --no-install-recommends python-urlgrabber
+RUN apt-get install -y --no-install-recommends yum
 
 RUN apt-get install -y python3 python3-pip python3-dev build-essential
 
