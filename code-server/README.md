@@ -194,6 +194,9 @@ $ docker tag code-server:latest "your dockerhub id"/code-server:latest
 
 # image push
 $ docker push "your dockerhub id"/code-server:latest
+
+docker tag code-server:latest kimhaksoo/code-server:latest
+docker push kimhaksoo/code-server:latest
 ```
 
 ### 도커 엔진 실행

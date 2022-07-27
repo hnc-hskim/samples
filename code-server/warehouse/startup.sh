@@ -17,3 +17,5 @@ env_whitelist=$(env | cut -d = -f 1 | grep -v -e HOSTNAME -e PWD -e HOME -e TERM
 # start code-server
 # su code --login -w "$env_whitelist" -c "/usr/bin/code-server --bind-addr 0.0.0.0:8080 /home/code/workspace" # --enable-proposed-api [\"ms-vsliveshare.vsliveshare\",\"ms-vscode.node-debug\",\"ms-vscode.node-debug2\"]
 runuser code --login -w "$env_whitelist" -c "/usr/bin/code-server --bind-addr 0.0.0.0:8080 /home/code/workspace" # --enable-proposed-api [\"ms-vsliveshare.vsliveshare\",\"ms-vscode.node-debug\",\"ms-vscode.node-debug2\"]
+
+/bin/bash /tools.sh;

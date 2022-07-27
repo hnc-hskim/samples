@@ -7,6 +7,8 @@ replicaCount: 1
 image:
   repository: codercom/code-server
   tag: '4.5.1'
+  # repository: kimhaksoo/code-server 
+  # tag: latest
   pullPolicy: Always
 
 # Specifies one or more secrets to be used when pulling images from a
@@ -116,7 +118,7 @@ tolerations: []
 
 affinity: {}
 
-password : {}
+password : "code"
 
 ## Persist data to a persistent volume
 persistence:
@@ -144,6 +146,9 @@ extraContainers: |
     - name: DOCKER_TLS_CERTDIR
       value: ""
     resources:
+      limits:
+        cpu: 20m
+        memory: 512Mi
       requests:
         cpu: 20m
         memory: 512Mi
