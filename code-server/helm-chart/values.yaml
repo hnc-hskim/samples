@@ -39,10 +39,10 @@ service:
   type: ClusterIP
   port: 8080
 
-CodeServerUrl: # code-server.local
+CodeServerUrl: mycode.apps.orca.cloud.hancom.com
 
 virtualservice:
-  enabled: false
+  enabled: true
   gateways: istio-system/apps-dns-ingressgateway
 
 ingress:
@@ -116,6 +116,8 @@ tolerations: []
 
 affinity: {}
 
+password : {}
+
 ## Persist data to a persistent volume
 persistence:
   enabled: true
@@ -134,23 +136,30 @@ persistence:
   # hostPath: /data
 
 ## Enable an Specify container in extraContainers.
-## This is meant to allow adding code-server dependencies, like docker-dind.
+## This is meant to allow adding code-server dependencies, like docker-dind.
 extraContainers: |
-  - name: docker-dind
-    image: docker:19.03-dind
-    imagePullPolicy: IfNotPresent
+  - name: dind-daemon
+    image: docker:stable-dind
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: ""
     resources:
       requests:
-        cpu: 250m
-        memory: 256M
+        cpu: 20m
+        memory: 512Mi
     securityContext:
-      privileged: true
-      procMount: Default
-    env:
-      - name: DOCKER_TLS_CERTDIR
-        value: ""
-      - name: DOCKER_DRIVER
-        value: "overlay2"
+        privileged: true
+    volumeMounts:
+      - name: docker-graph-storage
+        mountPath: /var/lib/docker 
+
+extraInitContainers: |
+  - name: copy-docker-binary
+    image: docker:stable-dind
+    command: ['sh', '-c', 'cp /usr/local/bin/docker /code-server-bin/']
+    volumeMounts:
+    - name: data
+      mountPath: /code-server-bin
 
 ## Additional code-server secret mounts
 extraSecretMounts: []
@@ -160,16 +169,17 @@ extraSecretMounts: []
   #   readOnly: true
 
 ## Additional code-server volume mounts
-extraVolumeMounts: []
-  # - name: extra-volume
-  #   mountPath: /mnt/volume
-  #   readOnly: true
-  #   existingClaim: volume-claim
-  #   hostPath: ""
+# extraVolumeMounts:
+#   - name: docker-graph-storage
+#     mountPath: "emptyDir"
+#     readOnly: true
+#     existingClaim: volume-claim
+#     hostPath: ""
+#     emptyDir: {}
 
 extraConfigmapMounts: []
   # - name: certs-configmap
   #   mountPath: /etc/code-server/ssl/
   #   subPath: certificates.crt # (optional)
   #   configMap: certs-configmap
-  #   readOnly: true
+  #   readOnly: true 

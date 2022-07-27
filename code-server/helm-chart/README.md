@@ -18,6 +18,8 @@ Chart.yaml  templates  values.yaml
 # values.yaml 수정
 
 # helm upgrade --install code-server .  -n code-server -f values.yaml
+
+helm install --install code-server .  -n code-server -f values.yaml
 ```
 
 ## Helm 삭제

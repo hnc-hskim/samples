@@ -23,5 +23,5 @@ spec:
         - destination:
             host: {{ include "code-server.fullname" . }}
             port:
-              number: 80
+              number: 8080
 {{- end }}
