@@ -22,6 +22,7 @@ RUN apt-get update \
     vim.tiny \
     lsb-release \
     wget \
+    ca-certificates \
   && git lfs install \
   && rm -rf /var/lib/apt/lists/*
 
@@ -55,10 +56,15 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
 RUN chmod +x ./kubectl
 RUN mv ./kubectl /usr/local/bin
 
-# RUN echo "Install helm" 
-# RUN wget -q https://get.helm.sh/helm-v3.5.4-linux-amd64.tar.gz  
-# RUN tar -zxf helm-v3.5.4-linux-amd64.tar.gz
-# RUN sudo mv linux-amd64/helm /usr/local/bin/helm  
+RUN echo "Install Docker-Compose"
+RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o docker-compose
+RUN chmod +x ./docker-compose
+RUN mv ./docker-compose /usr/local/bin
+
+RUN echo "Install Helm"
+RUN wget --no-check-certificate -q https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz 
+RUN tar -zxf helm-v3.4.1-linux-amd64.tar.gz
+RUN sudo mv linux-amd64/helm /usr/local/bin 
 
 # Allow users to have scripts run on container startup to prepare workspace.
 # https://github.com/coder/code-server/issues/5177
