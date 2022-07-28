@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "code-server.name" . }}
+    helm.sh/chart: {{ include "code-server.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ template "code-server.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.userRole }}
+subjects:
+- kind: ServiceAccount
+  name: {{ template "code-server.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}

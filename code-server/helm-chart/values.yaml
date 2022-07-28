@@ -121,7 +121,9 @@ tolerations: []
 
 affinity: {}
 
+# Basic Authentication Username
 password : "code"
+userRole: "cluster-admin"
 
 ## Persist data to a persistent volume
 persistence:
@@ -135,7 +137,7 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
-  size: 5Gi
+  size: 2Gi
   annotations: {}
   # existingClaim: ""
   # hostPath: /data

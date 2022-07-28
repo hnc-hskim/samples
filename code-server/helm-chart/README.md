@@ -19,7 +19,7 @@ Chart.yaml  templates  values.yaml
 
 # helm upgrade --install code-server .  -n code-server -f values.yaml 
 
-helm upgrade --install code-server .  -n hskim -f values.yaml 
+helm upgrade --install code-server .  -n hskim -f values.yaml  
 ```
 
 ## Helm 삭제
@@ -46,6 +46,21 @@ $ helm install <release name> <Chart.yaml path> --debug --dry-run
 helm install code-server ./helm-chart --debug --dry-run
 
 helm install code-server . --debug --dry-run
+```
+
+## 설치 테스트
+```
+helm template . --set user=<YOURNAME> --set password=<YOURPASSWORD> --set namespace=<YOURNAMESPACE> | kubectl apply -f -
+
+$ helm template . --set user=test --set password=test --set namespace=test | kubectl apply -f -
+serviceaccount/release-name-code-server created
+persistentvolumeclaim/release-name-code-server created
+clusterrolebinding.rbac.authorization.k8s.io/code-server-hskim created
+service/release-name-code-server created
+deployment.apps/release-name-code-server created
+virtualservice.networking.istio.io/release-name-code-server created
+secret/release-name-code-server created
+pod/release-name-code-server-test-connection created
 ```
 
 ## 디버깅 방법
