@@ -66,6 +66,14 @@ RUN wget --no-check-certificate -q https://get.helm.sh/helm-v3.4.1-linux-amd64.t
 RUN tar -zxf helm-v3.4.1-linux-amd64.tar.gz
 RUN sudo mv linux-amd64/helm /usr/local/bin 
 
+RUN echo "Install NPM"
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    npm
+RUN npm install npm@latest -g && \
+    npm install n -g && \
+    n latest
+
 # Allow users to have scripts run on container startup to prepare workspace.
 # https://github.com/coder/code-server/issues/5177
 ENV ENTRYPOINTD=${HOME}/entrypoint.d

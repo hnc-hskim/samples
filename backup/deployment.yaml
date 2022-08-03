@@ -1,57 +1,18 @@
-apiVersion: apps/v1
+# Deployment sample
+
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "code-server.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "code-server.name" . }}
-    helm.sh/chart: {{ include "code-server.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: code-server
+  namespace: default
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: {{ include "code-server.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "code-server.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: code-server
     spec:
-      imagePullSecrets: {{- toYaml .Values.imagePullSecrets | nindent 8 }}
-      {{- if .Values.hostnameOverride }}
-      hostname: {{ .Values.hostnameOverride }}
-      {{- end }}
-      {{- if .Values.priorityClassName }}
-      priorityClassName: {{ .Values.priorityClassName }}
-      {{- end }}
-      {{- if .Values.securityContext.enabled }}
-      securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-      {{- end }}
-      {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
       initContainers:
-      - name: init-chmod-data
-        image: busybox:latest
-        imagePullPolicy: IfNotPresent
-        command:
-          - sh
-          - -c
-          - |
-            chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.fsGroup }} /home/coder
-        securityContext:
-          runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}          
-        volumeMounts:
-        - name: data
-          mountPath: /home/coder
-{{- if .Values.extraInitContainers }}
-{{ tpl .Values.extraInitContainers . | indent 6}}
-{{- end }}
-      {{- end }}
       - name: copy-docker-binary
         image: docker:stable-dind
         command: ['sh', '-c', 'cp /usr/local/bin/docker /code-server-bin/']
@@ -59,117 +20,42 @@ spec:
         - name: code-server-usr-local-bin
           mountPath: /code-server-bin
       containers:
-{{- if .Values.extraContainers }}
-{{ tpl .Values.extraContainers . | indent 8}}
-{{- end }}
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.securityContext.enabled }}
-          securityContext:
-            runAsUser: {{ .Values.securityContext.runAsUser }}
+      - name: code-server
+        image: linuxserver/code-server
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8443
+          name: https
+        envFrom:
+        - configMapRef:
+            name: code-server
+        - secretRef:
+            name: code-server
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: false
+        - name: code-server-usr-local-bin
+          mountPath: /usr/local/bin
+      - name: dind-daemon
+        image: docker:stable-dind
+        env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+        resources:
+          requests:
+            cpu: 20m
+            memory: 512Mi
+        securityContext:
             privileged: true
-            capabilities:
-              add: ["NET_ADMIN"]
-          {{- end }}
-          env:
-        {{- if .Values.extraVars }}
-{{ toYaml .Values.extraVars | indent 10 }}
-        {{- end }}
-          - name: PASSWORD
-            valueFrom:
-              secretKeyRef:
-              {{- if .Values.existingSecret }}
-                name: {{ .Values.existingSecret }}
-              {{- else }}
-                name: {{ template "code-server.fullname" . }}
-              {{- end }}
-                key: password
-        {{- if .Values.extraArgs }}
-          args:
-{{ toYaml .Values.extraArgs | indent 10 }}
-        {{- end }}
-          volumeMounts:
-          - name: data
-            mountPath: /home/coder
-          {{- range .Values.extraConfigmapMounts }}
-          - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-            subPath: {{ .subPath | default "" }}
-            readOnly: {{ .readOnly }}
-          {{- end }}
-          {{- range .Values.extraSecretMounts }}
-          - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-            readOnly: {{ .readOnly }}
-          {{- end }}
-          {{- range .Values.extraVolumeMounts }}
-          - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-            subPath: {{ .subPath | default "" }}
-            readOnly: {{ .readOnly }}
-          {{- end }}
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-        {{- tpl . $ | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ template "code-server.serviceAccountName" . }}
+        volumeMounts:
+          - name: docker-graph-storage
+            mountPath: /var/lib/docker
       volumes:
-      - name: data
-      {{- if .Values.persistence.enabled }}
-        {{- if not .Values.persistence.hostPath }}
+      - name: config
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "code-server.fullname" .) }}
-        {{- else }}
-        hostPath:
-          path: {{ .Values.persistence.hostPath }}
-          type: Directory
-        {{- end -}}
-      {{- else }}
+          claimName: code-server-config
+      - name: docker-graph-storage
         emptyDir: {}
-      {{- end -}}
-      {{- range .Values.extraSecretMounts }}
-      - name: {{ .name }}
-        secret:
-          secretName: {{ .secretName }}
-          defaultMode: {{ .defaultMode }}
-      {{- end }}
-      {{- range .Values.extraConfigmapMounts }}
-      - name: {{ .name }}
-        configMap:
-          name: {{ .configMap }}
-          defaultMode: {{ .defaultMode }}
-      {{- end }}
-      {{- range .Values.extraVolumeMounts }}
-      - name: {{ .name }}
-        {{- if .existingClaim }}
-        persistentVolumeClaim:
-          claimName: {{ .existingClaim }}
-        {{- else }}
-        hostPath:
-          path: {{ .hostPath }}
-          type: Directory
-        {{- end }}
-      {{- end }}
+      - name: code-server-usr-local-bin
+        emptyDir: {}

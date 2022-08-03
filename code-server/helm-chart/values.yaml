@@ -8,7 +8,7 @@ image:
   #repository: codercom/code-server
   #tag: '4.5.1'
   repository: kimhaksoo/code-server 
-  tag: v0.16
+  tag: v0.17
   # repository: linuxserver/code-server
   # tag: latest
   
@@ -100,8 +100,8 @@ volumePermissions:
 ##
 securityContext:
   enabled: true
-  fsGroup: 1000
-  runAsUser: 1000
+  fsGroup: 0
+  runAsUser: 0
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -168,10 +168,10 @@ extraContainers: |
 extraInitContainers: |
   - name: copy-docker-binary
     image: docker:stable-dind
-    command: ['sh', '-c', 'cp /usr/local/bin/docker /code-server-bin/']
+    command: ['sh', '-c', 'cp /usr/local/bin/docker /home/coder']
     volumeMounts:
     - name: data
-      mountPath: /code-server-bin
+      mountPath: /home/coder
 
 ## Additional code-server secret mounts
 extraSecretMounts: []

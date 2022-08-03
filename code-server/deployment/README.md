@@ -1,80 +1,5 @@
-## docker 실행시 패스워드 확인
-```
-~/.config/code-server/config.yaml
-```
-
-```
-docker run --rm -it  -p 8080:8080/tcp code-server:latest 
-
-[2022-08-03T01:46:46.892Z] info  Wrote default config file to ~/.config/code-server/config.yaml       
-[2022-08-03T01:46:47.162Z] info  code-server 3.11.0 4e8cd09ef0412dfc7b148b7639a692e20e4fd6dd
-[2022-08-03T01:46:47.163Z] info  Using user-data-dir ~/.local/share/code-server
-[2022-08-03T01:46:47.173Z] info  Using config file ~/.config/code-server/config.yaml
-[2022-08-03T01:46:47.173Z] info  HTTP server listening on http://0.0.0.0:8080
-[2022-08-03T01:46:47.173Z] info    - Authentication is enabled
-[2022-08-03T01:46:47.173Z] info      - Using password from $PASSWORD
-[2022-08-03T01:46:47.173Z] info    - Not serving HTTPS
-```
-
-### docker 테스트
-```
-docker run hello-world
-```
-
-### code-server github
-```
-git clone https://github.com/coder/code-server.git
-
-# submodule도 clone
-git clone --recurse-submodules https://github.com/coder/code-server.git
-```
-
-### docker build
-```
-$ docker build -t code-server:v0.1 -f Dockerfile .
-```
-
-### docker run
-``` 
-docker run -it -p 8080:8080 --name code -e PASSWORD="0000" code-server:latest 
-
-# docker:dind는 도커컨테이너 안에 docker를 사용하기 위해 사용한다. 
-docker run --privileged --cap-add=NET_ADMIN -it -p 8080:8080 --name code -e PASSWORD="0000" code-server:latest docker:dind
-
-```
-
-- in kubernetes manifest
-```
-securityContext: 
-  privileged: true
-  capabilities:
-    add: ["NET_ADMIN"]
-```
-
-### image push
-```
-# tag 변경
-$ docker tag code-server:latest "your dockerhub id"/code-server:latest
-
-# image push
-$ docker push "your dockerhub id"/code-server:latest
-
-docker tag code-server:latest kimhaksoo/code-server:v0.15
-docker push kimhaksoo/code-server:v0.15
-``` 
-
----
 https://kmaster.tistory.com/39?category=925859
 https://hub.docker.com/r/linuxserver/code-server
-
-## build 및 버전 관리
-```
-# Chart.yaml
-version: 3.0.26
-
-# deploy.sh
-mv code-server-3.0.26.tgz ../../packages/code-server/
-```
 
 ## Code Server Helm 설치
 ```
@@ -102,6 +27,7 @@ helm upgrade --install code-server .  -n hskim -f values.yaml
 $ helm delete code-server -n code-server
 release "code-server" uninstalled
 ```
+
 
 ## 차트 문법 검사
 ```
